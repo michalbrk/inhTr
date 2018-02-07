@@ -97,4 +97,73 @@ document.addEventListener("DOMContentLoaded", function(e) {
         }
     };
     
+    //Children constructor functions
+    function Triangle(a,b,c) {
+        this.points = [a,b,c];
+        
+        this.getArea = function() {
+            let p = this.getPerm(),
+                s = p / 2;
+            
+            return Math.sqrt(s * 
+                            (s - this.lines[0].length) * 
+                            (s - this.lines[1].length) * 
+                            (s - this.lines[2].length));
+        };
+    }
+    
+    //Rectangle constructor receives one point (upper-left)
+    //and lengths of two sides,
+    //then populating its points array starting from that points
+    function Rectangle(p, sideA, sideB) {
+        this.points = [
+            p,
+            new Point(p.x + sideA, p.y),//Top right
+            new Point(p.x + sideA, p.y + sideB),//Bottom right
+            new Point(p.x, p.y + sideB)//Bottom left
+        ];
+        
+        this.getArea = function() {
+            return sideA * sideB;
+        };
+    }
+    
+    //Square constructor using the Triangle
+    function Square(p, side) {
+        Rectangle.call(this, p, side, side);
+    }
+    
+    //Inheritance: creating a new instance of the parent
+    //and setting it to child's prototype
+    (function() {
+        let s = new Shape();
+        Triangle.prototype = s;
+        Rectangle.prototype = s;
+        Square.prototype = s;
+    })();
+    
+    
+    
+    //Testing
+    //Defining 3 points for a triangle
+    let p1 = new Point(100,100),
+        p2 = new Point(300,100),
+        p3 = new Point(200,0);
+    
+    //Creating the triangle with the constructor
+    let t = new Triangle(p1,p2,p3);
+    
+    //Drawing rectangle on canvas
+    t.draw();
+    console.log(t.getPerm(), t.getArea());
+    
+    //Drawing square on canvas
+    let s = new Square(new Point(130,130), 50);
+    s.draw();
+    console.log(s.getArea(), s.getPerm());
+    
+    //Drawing square reusing triangle's point
+    new Square(p1, 200).draw();
+    
+    
 });
